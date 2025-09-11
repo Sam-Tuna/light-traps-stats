@@ -6,7 +6,7 @@ library(ggplot2)
 library(Hmisc)
 library(plotly)
 
-df <- read_excel("/home/samir/Área de trabalho/ecologia/RawData_Ecology.xlsx", col_names = TRUE)
+df <- read_excel("RawData_Ecology.xlsx", col_names = TRUE)
 
 summary(df)
 
@@ -14,11 +14,10 @@ moon_season <- df %>% group_by(Night, MoonPhase, Season) %>%
   summarise(Count=sum(Count), .groups="drop")
 
 boxplot(Count ~ MoonPhase, data=moon_season, ylab="Individuals per night", col=c("white", "#7f7f7f"))
-fig <- plot_ly(moon_season, y = ~Count, color = ~MoonPhase, type = "box", colors = c("#bcbd22", "#7f7f7f"))
-fig
+fig <- plot_ly(moon_season, y = ~Count, color = ~MoonPhase, type = "box", colors = c("#7f7f7f", "black"), yaxis="Individuals captured"); fig
 boxplot(Count ~ Season, data=moon_season, ylab="Individuals per night", col=c("#ff7f0e", "#9467bd", "#2ca02c", "#1f77b4"))
-fig <- plot_ly(moon_season, y = ~Count, color = ~Season, type = "box", colors = c("#ff7f0e", "#9467bd", "#2ca02c", "#1f77b4") )
-fig
+fig <- plot_ly(moon_season, y = ~Count, color = ~Season, type = "box", colors = c("#ff7f0e", "#9467bd", "#2ca02c", "#1f77b4") ); fig
+fig <- plot_ly(moon_season, y = ~Count, color = ~Season, type = "violin", colors = c("#ff7f0e", "#9467bd", "#2ca02c", "#1f77b4") ); fig
 
 df$Temp_min <- as.numeric(as.character(df$Temp_min))
 df$Temp_max <- as.numeric(as.character(df$Temp_max))
@@ -31,8 +30,8 @@ summary(df)
 df$Temp_avg <- (df$Temp_min + df$Temp_max) / 2
 df$Hum_avg <- (df$Hum_min + df$Hum_max) / 2
 
-vars <- df %>% group_by(Night, MoonPhase, Season, TrapType, Temp_avg, Hum_avg, Rain) %>%
-  summarise(Count=sum(Count), .groups="drop")
+vars <- df %>% group_by(Night, MoonPhase, Season, TrapType, Temp_avg, Hum_avg, Rain) %>% summarise(Count=sum(Count), .groups="drop")
+
 
 nb_model <- glm.nb(Count ~ TrapType + MoonPhase + Temp_avg + Hum_avg + Rain + Season, data=vars)
 print(summary(nb_model))
