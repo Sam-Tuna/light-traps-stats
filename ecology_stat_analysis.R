@@ -36,6 +36,12 @@ vars <- df %>% group_by(Night, MoonPhase, Season, TrapType, Temp_avg, Hum_avg, R
 nb_model <- glm.nb(Count ~ TrapType + MoonPhase + Temp_avg + Hum_avg + Rain + Season, data=vars)
 print(summary(nb_model))
 
+list(residual.deviance           = deviance(nb_model),
+     residual.degrees.of.freedom = df.residual(nb_model),
+     chisq.p.value               = pchisq(deviance(nb_model), df.residual(nb_model), lower = F)
+)#h0 = my model  provides an adequate fit for the data 
+
+
 pivot <- xtabs(Count ~ ArthropodOrder + TrapType, data=df)
 print(chisq.test(pivot))
 
